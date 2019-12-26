@@ -19,6 +19,7 @@ java文件夹保存controller service等
 resource static保存静态文件 template保存模板等文件
 application.property保存路由配置服务配置等内容，定义配置等
 
+Gradle:
 
 
 网址构成：
