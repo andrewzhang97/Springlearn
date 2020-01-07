@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Andrew 学习论坛</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/css/community.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:insert="~{Navigation.html::nav}"></div>
+    <div class="container_fluid main">
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <h2> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>提出问题</h2>
+                <hr>
+                <form action="./publish" method="post">
+                    <div class="form-group">
+                        <label for="title">问题标题:</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="问题标题....">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">问题内容:</label>
+                        <input type="text" class="form-control" id="description" name="description" placeholder="问题标题....">
+                    </div>
+                    <div class="form-group">
+                        <label for="tags">添加标签:</label>
+                        <input type="text" class="form-control" id="tags" name="tags" placeholder="输入标签">
+                    </div>
+                    <div><span class="alert alert-danger" role="alert" th:text="${error}" th:if="${error!=null}"></span></div>
+                    <button type="submit" class="btn btn-success btn-publish">发布</button>
+                </form>
+            </div>
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" style="color: #0b2e13">
+                <h3>问题指南</h3>
+                请按照下列操作
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,9 @@
 package andrewjavastudy.demo.contoller;
 
+import andrewjavastudy.demo.dto.Paginationdto;
 import andrewjavastudy.demo.mapper.UsersMapper;
 import andrewjavastudy.demo.model.Users;
+import andrewjavastudy.demo.service.QuestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,21 +17,17 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
     @Autowired
     private UsersMapper usersMapper;
+    @Autowired
+    private QuestionsService questionsService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie:cookies){
-            if(cookie.getName().equals("token")){
-                String token=cookie.getValue();
-                Users users = usersMapper.findByToken(token);
-                if(users != null){
-                    request.getSession().setAttribute("users",users);
-                }
-                break;
-            }
-
-        }
+    public String index(HttpServletRequest request,
+                        Model model,
+                        @RequestParam(name ="page", defaultValue = "1") Integer page,
+                        @RequestParam(name ="size", defaultValue = "5") Integer size
+                        ){
+        Paginationdto pagination =questionsService.list(page,size);
+        model.addAttribute("pagination", pagination);
 
         return "index"; //去resource/templates下调用hello.html
     }

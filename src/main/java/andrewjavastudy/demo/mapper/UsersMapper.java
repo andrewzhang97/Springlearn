@@ -9,10 +9,12 @@ import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface UsersMapper {
-    @Insert("insert into users(name,account_id,token,gmt_create,gmt_modified) values(#{name},#{account_id},#{token},#{gmtCreate},#{gmtModified})")
+    @Insert("insert into users(name,account_id,token,gmt_create,gmt_modified,avatar_url) values(#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
     void insert(Users users);
 
     @Select("select * from users where token=#{token}")
     Users findByToken(@Param("token") String token);// if it is a class we don't need @param()
 
+    @Select("select * from users where id=#{id}")
+    Users findById(@Param("id")Integer id);
 }

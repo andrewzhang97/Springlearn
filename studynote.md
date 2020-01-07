@@ -34,3 +34,5 @@ hello为下属路由 将键为name 数值为andrew的参数传入服务器
 之前学过学的不仔细，都忘的差不多了，从新尝试在IDE中试用一下
 git系列
 
+SpringBoot devtool 可以实现热部署
+
