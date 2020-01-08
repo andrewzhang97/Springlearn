@@ -1,10 +1,7 @@
 package andrewjavastudy.demo.mapper;
 
 import andrewjavastudy.demo.model.Questions;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -22,6 +19,12 @@ public interface QuestionsMapper {
     @Select("select * from questions where creator_id=#{userId} limit #{offset},#{size}")
     List<Questions> listByUserId(@Param(value="userId") Integer userId,@Param(value = "offset") Integer offset,@Param(value="size") Integer size);
 
-    @Select("select count(1) where creator_id=#{userId} from questions")
+    @Select("select count(1) from questions where creator_id=#{userId}")
     Integer countByUserId(@Param(value="userId") Integer userId);
+
+    @Select("select * from questions where id=#{id}")
+    Questions getById(@Param("id") Integer id);
+
+    @Update("update questions set title=#{title},description=#{description},gmt_modified=#{gmtModified},tags=#{tags} where id=#{id}")
+    void update(Questions questions);
 }

@@ -4,10 +4,12 @@ import andrewjavastudy.demo.mapper.QuestionsMapper;
 import andrewjavastudy.demo.mapper.UsersMapper;
 import andrewjavastudy.demo.model.Questions;
 import andrewjavastudy.demo.model.Users;
+import andrewjavastudy.demo.service.QuestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,6 +21,9 @@ public class PublishController {
     @Autowired
     private QuestionsMapper questionsMapper;
 
+    @Autowired
+    private QuestionsService questionsService;
+
 
     @GetMapping("/publish")//get publish
     public String publish(){
@@ -26,12 +31,16 @@ public class PublishController {
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam("title") String title,
-                            @RequestParam("description") String description,
-                            @RequestParam("tags") String tags,
+    public String doPublish(@RequestParam(value="title",required = false) String title,
+                            @RequestParam(value="description",required = false) String description,
+                            @RequestParam(value="tags",required = false) String tags,
+                            @RequestParam(value ="id",required = false )Integer id,
                             HttpServletRequest request,
                             Model model
                             ){
+        model.addAttribute("title",title);
+        model.addAttribute("description",description);
+        model.addAttribute("tags",tags);
         Users users=(Users)request.getSession().getAttribute("users");//从request的session中拿到users元素，再进行判断
         if (users==null){
             model.addAttribute("error","didn't login");
@@ -42,9 +51,45 @@ public class PublishController {
         questions.setDescription(description);
         questions.setTags(tags);
         questions.setCreatorId(users.getId());
-        questions.setGmtCreate(System.currentTimeMillis());
-        questions.setGmtModified(questions.getGmtCreate());
-        questionsMapper.create(questions);
+        questions.setId(id);
+        questionsService.createOrUpdate(questions);
         return "redirect:/";
     }
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name="id") Integer id,Model model){
+        Questions questions=questionsMapper.getById(id);
+        model.addAttribute("title",questions.getTitle());
+        model.addAttribute("description",questions.getDescription());
+        model.addAttribute("tags",questions.getTags());
+        model.addAttribute("id",questions.getId());
+        return "publish";
+    }
+    @PostMapping("/publish/{id}")
+    public String editPublish(@RequestParam(value="title",required = false) String title,
+                            @RequestParam(value="description",required = false) String description,
+                            @RequestParam(value="tags",required = false) String tags,
+                            @RequestParam(value ="id",required = false )Integer id,
+                            HttpServletRequest request,
+                            Model model
+    ){
+        model.addAttribute("title",title);
+        model.addAttribute("description",description);
+        model.addAttribute("tags",tags);
+        Users users=(Users)request.getSession().getAttribute("users");//从request的session中拿到users元素，再进行判断
+        if (users==null){
+            model.addAttribute("error","didn't login");
+            return "publish";
+        }
+        Questions questions=new Questions();
+        questions.setTitle(title);
+        questions.setDescription(description);
+        questions.setTags(tags);
+        questions.setCreatorId(users.getId());
+        questions.setId(id);
+        questionsService.createOrUpdate(questions);
+        return "redirect:/";
+    }
+//这段有问题 冗余代码 待解决
+
 }

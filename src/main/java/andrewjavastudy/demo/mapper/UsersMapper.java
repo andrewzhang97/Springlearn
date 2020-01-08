@@ -17,4 +17,11 @@ public interface UsersMapper {
 
     @Select("select * from users where id=#{id}")
     Users findById(@Param("id")Integer id);
+
+    @Select("select * from users where account_id=#{accountId}")
+    Users findByAccountId(@Param("accountId") String accountId);
+
+
+    @Select("update users set name=#{name},token=#{token},gmt_modified=#{gmtModified},avatar_url=#{avatarUrl}")
+    void update(Users users);
 }

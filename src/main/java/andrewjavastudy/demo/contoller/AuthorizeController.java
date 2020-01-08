@@ -5,6 +5,7 @@ import andrewjavastudy.demo.dto.GithubUsers;
 import andrewjavastudy.demo.mapper.UsersMapper;
 import andrewjavastudy.demo.model.Users;
 import andrewjavastudy.demo.provider.GitProvider;
+import andrewjavastudy.demo.service.UsersService;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,11 @@ public class AuthorizeController {
     @Autowired
     private UsersMapper usersMapper;
 
+    @Autowired
+    private UsersService usersService;
+
+
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
@@ -59,7 +65,7 @@ public class AuthorizeController {
             users.setGmtCreate(System.currentTimeMillis());
             users.setGmtModified(users.getGmtCreate());
             users.setAvatarUrl(githubUsers.getAvatarUrl());
-            usersMapper.insert(users);
+            usersService.createOrUpdate(users);//在这个地方判断是否已经登陆，若登陆过则不许需要重新在数据库中加入只需要更新
 
             response.addCookie(new Cookie("token",token));
 
@@ -72,5 +78,16 @@ public class AuthorizeController {
         }
 
     }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("users");//删去session中关于users的信息
+        Cookie cookie=new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);//删除已知的cookie直接建立一个一个新的同名cookie即可
+        return "redirect:/";
+    }
+
+
 }
 //用java模拟post请求

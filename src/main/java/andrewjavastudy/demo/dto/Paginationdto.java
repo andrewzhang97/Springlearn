@@ -15,13 +15,9 @@ public class Paginationdto {
     private List<Integer> pages =new ArrayList<>();
     private  Integer totalPage;
 
-    public void setPagination(Integer page, Integer size, Integer totalCount) {
+    public void setPagination(Integer page,  Integer totalPage) {
 
-        if(totalCount%size==0){
-            totalPage=totalCount/size;
-        }else{
-            totalPage=totalCount/size +1;
-        }
+        this.totalPage=totalPage;
         //计算pages的内容
 
         pages.add(page);

@@ -41,6 +41,6 @@ public class ProfileController {
         }
         Paginationdto paginationdto=questionsService.list(users.getId(),page,size);//在questionService传入一个方法
         model.addAttribute("pagination", paginationdto);
-        return "Profile";
+        return "profile";
     }
 }
