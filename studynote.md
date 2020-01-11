@@ -36,3 +36,21 @@ git系列
 
 SpringBoot devtool 可以实现热部署
 
+Mybatis Generator：MyBatis Generator是用来生成相应的mapper.xml文件、model对象和mapper文件。
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+用该方法实现mapper的自动注入
+
+异常处理：@ExceptionHandler 和 @ControllerAdvice来处理Controller错误
+@Error处理404等错误
+
+
+Jquery：利用ajax不刷新页面提交 异步刷新
+```$.ajax({
+  type: 'POST',
+  url: url,
+  data: data,
+  success: success,
+  dataType: dataType
+});`````
+
+

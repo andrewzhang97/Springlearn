@@ -1,4 +1,4 @@
-package andrewjavastudy.demo.contoller;
+package andrewjavastudy.demo.enums;
 
 public enum  CommentTypeEnums {
     QUESTIONS(1),
@@ -11,5 +11,14 @@ public enum  CommentTypeEnums {
 
     public Integer getType() {
         return type;
+    }
+
+    public static boolean isExist(Integer type) {
+        for(CommentTypeEnums commentTypeEnums:CommentTypeEnums.values()){
+            if(commentTypeEnums.getType()==type){
+                return true;
+            }
+        }
+        return false;
     }
 }

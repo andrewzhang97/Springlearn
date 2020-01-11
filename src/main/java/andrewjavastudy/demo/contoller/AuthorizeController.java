@@ -2,11 +2,9 @@ package andrewjavastudy.demo.contoller;
 
 import andrewjavastudy.demo.dto.Accesstokendto;
 import andrewjavastudy.demo.dto.GithubUsers;
-import andrewjavastudy.demo.mapper.UsersMapper;
 import andrewjavastudy.demo.model.Users;
 import andrewjavastudy.demo.provider.GitProvider;
 import andrewjavastudy.demo.service.UsersService;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,9 +19,6 @@ import java.util.UUID;
 @Controller
 public class AuthorizeController {
 
-    @Autowired
-    private GitProvider gitProvider;
-
     @Value("${github.client.id}")
     private String clientId;
 
@@ -33,8 +28,6 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirectUri;
 
-    @Autowired
-    private UsersMapper usersMapper;
 
     @Autowired
     private UsersService usersService;

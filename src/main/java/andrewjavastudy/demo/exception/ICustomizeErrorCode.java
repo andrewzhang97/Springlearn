@@ -1,6 +1,7 @@
 package andrewjavastudy.demo.exception;
 
-public interface CustomizeErrorCode {
-    public String message=null;
+public interface ICustomizeErrorCode {
+    String getMessage();
+    Integer getCode();
 
 }

@@ -1,7 +1,6 @@
 package andrewjavastudy.demo.contoller;
 
-import andrewjavastudy.demo.mapper.QuestionsMapper;
-import andrewjavastudy.demo.mapper.UsersMapper;
+import andrewjavastudy.demo.dto.Questionsdto;
 import andrewjavastudy.demo.model.Questions;
 import andrewjavastudy.demo.model.Users;
 import andrewjavastudy.demo.service.QuestionsService;
@@ -18,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
-    @Autowired
-    private QuestionsMapper questionsMapper;
 
     @Autowired
     private QuestionsService questionsService;
@@ -34,7 +31,7 @@ public class PublishController {
     public String doPublish(@RequestParam(value="title",required = false) String title,
                             @RequestParam(value="description",required = false) String description,
                             @RequestParam(value="tags",required = false) String tags,
-                            @RequestParam(value ="id",required = false )Integer id,
+                            @RequestParam(value ="id",required = false )Long id,
                             HttpServletRequest request,
                             Model model
                             ){
@@ -57,8 +54,8 @@ public class PublishController {
     }
 
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable(name="id") Integer id,Model model){
-        Questions questions=questionsMapper.getById(id);
+    public String edit(@PathVariable(name="id") Long id,Model model){
+        Questionsdto questions=questionsService.getById(id);
         model.addAttribute("title",questions.getTitle());
         model.addAttribute("description",questions.getDescription());
         model.addAttribute("tags",questions.getTags());
@@ -69,7 +66,7 @@ public class PublishController {
     public String editPublish(@RequestParam(value="title",required = false) String title,
                             @RequestParam(value="description",required = false) String description,
                             @RequestParam(value="tags",required = false) String tags,
-                            @RequestParam(value ="id",required = false )Integer id,
+                            @RequestParam(value ="id",required = false )Long id,
                             HttpServletRequest request,
                             Model model
     ){
