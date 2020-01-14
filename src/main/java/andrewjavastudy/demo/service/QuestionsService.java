@@ -128,6 +128,8 @@ public class QuestionsService {
         if(questions.getId()==null){
             questions.setGmtCreate(System.currentTimeMillis());
             questions.setGmtModified(questions.getGmtCreate());
+            questions.setLikeCount(0);
+            questions.setViewCount(0);
             questionsMapper.insert(questions);
         }else{
             //update

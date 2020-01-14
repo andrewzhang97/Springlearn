@@ -11,6 +11,44 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script>
+        function post() {
+            var questionId=$("#question_id").val();
+            var content=$("#comment_content").val();
+            if(!content){
+                alert("不能为空");
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/comment",
+                contentType:"application/json",
+                data:JSON.stringify( {
+                    "parentId":questionId,
+                    "content":content,
+                    "type":1
+                }),
+                success: function (response) {
+                    if(response.code==200){
+                        window.location.reload();
+                    }else{
+                        if(response.code==2003){
+                            var isAccepted=confirm(response.message);
+                            if(isAccepted){
+                                window.open("https://github.com/login/oauth/authorize?client_id=5dbdc669008c933f3663&redirect_uri=http://localhost:8800/callback&scope=user&state=1");
+                                window.localStorage.setItem("closable",true);
+                            }
+                        }
+                    }
+                    console.log(response);
+                },
+                dataType:"json"
+            });
+            console.log(questionId);
+            console.log(content);
+        }
+    </script>
 </head>
 <body>
 <div th:insert="~{Navigation.html::nav}"></div>
@@ -34,7 +72,32 @@
                 编辑
             </a></div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:each="comment:${comments}">
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-circle" th:src="${comment.users.avatarUrl}" height="60" width="60">
+                        </a>
+                    </div>
+                    <div class="media-body" >
+                        <h7 class="media-heading">
+                            <span th:text="${comment.users.name}"></span><br>
+                            <span th:text="${comment.users.accountId}"></span>
+                        </h7>
+                        <div th:text="${comment.content}">content</div>
+                        <div style="color: #999;margin-top: 5px">
+                            <span class="glyphicon glyphicon-thumbs-up" style="margin-right: 15px;font-size: 15px"></span>
+                            <span class="glyphicon glyphicon-comment" style="margin-right: 15px;font-size: 15px"></span>
+                            <span class="pull-right" th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
+                <h4>
+                    添加回复
+                </h4>
                 <div class="media">
                     <div class="media-left">
                         <a href="#">
@@ -48,10 +111,9 @@
                         </h7>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <textarea class="form-control" rows="8"></textarea>
-                <button type="button" class="btn btn-success" style="margin: 10px">回复</button>
+                <input type="hidden" id="question_id" th:value="${question.id}">
+                <textarea class="form-control" rows="8" id="comment_content"></textarea>
+                <button type="button" class="btn btn-success" style="margin: 10px" onclick="post()">回复</button>
             </div>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" style="color: #0b2e13">
@@ -80,3 +142,4 @@
 </div>
 </body>
 </html>
+

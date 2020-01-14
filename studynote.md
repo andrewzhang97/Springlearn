@@ -45,12 +45,16 @@ mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 
 
 Jquery：利用ajax不刷新页面提交 异步刷新
-```$.ajax({
+```
+$.ajax({
   type: 'POST',
   url: url,
   data: data,
   success: success,
   dataType: dataType
-});`````
+});
+`````
+localStorage：长久保存
 
+SessionStorage：关闭tab后删除
 
