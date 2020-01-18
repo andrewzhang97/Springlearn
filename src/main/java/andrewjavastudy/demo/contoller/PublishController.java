@@ -1,6 +1,8 @@
 package andrewjavastudy.demo.contoller;
 
+import andrewjavastudy.demo.cache.Tagscache;
 import andrewjavastudy.demo.dto.Questionsdto;
+import andrewjavastudy.demo.dto.Tagsdto;
 import andrewjavastudy.demo.model.Questions;
 import andrewjavastudy.demo.model.Users;
 import andrewjavastudy.demo.service.QuestionsService;
@@ -23,7 +25,8 @@ public class PublishController {
 
 
     @GetMapping("/publish")//get publish
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("tagsList", Tagscache.get());
         return "publish";
     }
 
@@ -38,6 +41,7 @@ public class PublishController {
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tags",tags);
+        model.addAttribute("tagsList", Tagscache.get());
         Users users=(Users)request.getSession().getAttribute("users");//从request的session中拿到users元素，再进行判断
         if (users==null){
             model.addAttribute("error","didn't login");
@@ -60,6 +64,7 @@ public class PublishController {
         model.addAttribute("description",questions.getDescription());
         model.addAttribute("tags",questions.getTags());
         model.addAttribute("id",questions.getId());
+        model.addAttribute("tagsList", Tagscache.get());
         return "publish";
     }
     @PostMapping("/publish/{id}")
@@ -73,6 +78,7 @@ public class PublishController {
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tags",tags);
+        model.addAttribute("tagsList", Tagscache.get());
         Users users=(Users)request.getSession().getAttribute("users");//从request的session中拿到users元素，再进行判断
         if (users==null){
             model.addAttribute("error","didn't login");

@@ -14,4 +14,6 @@ public interface QuestionsExtMapper {
      * @mbg.generated Thu Jan 09 19:04:48 HKT 2020
      */
     int incView(Questions record);
+    List<Questions> selectRelated(Questions questions);
+
 }

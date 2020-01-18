@@ -2,7 +2,9 @@ package andrewjavastudy.demo.contoller;
 
 
 import andrewjavastudy.demo.dto.CommentsCreatedto;
+import andrewjavastudy.demo.dto.Commentsdto;
 import andrewjavastudy.demo.dto.Resultsdto;
+import andrewjavastudy.demo.enums.CommentTypeEnums;
 import andrewjavastudy.demo.exception.CustomizeErrorCode;
 import andrewjavastudy.demo.mapper.CommentsMapper;
 import andrewjavastudy.demo.model.Comments;
@@ -11,12 +13,10 @@ import andrewjavastudy.demo.service.CommentsService;
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -34,6 +34,7 @@ public class CommentController {
             return Resultsdto.errorOf(CustomizeErrorCode.NO_LOGIN);
         }
         if(commentsCreatedto==null|| org.apache.commons.lang3.StringUtils.isBlank(commentsCreatedto.getContent())){
+            //一个新的方法 不用重新去验证两次是否为空
             return Resultsdto.errorOf(CustomizeErrorCode.COMMENT_NOT_FOUND);
         }
 
@@ -47,6 +48,13 @@ public class CommentController {
         comments.setLikeCount(0L);
         commentsService.insert(comments);
         return Resultsdto.okOf();
+    }
+    @ResponseBody//这样不需要去查找templete是否存在comment.html
+    @RequestMapping(value = "/comment/{id}",method = RequestMethod.GET)
+    public Resultsdto<List<Commentsdto>> comments(@PathVariable(name="id")Long id){
+        List<Commentsdto> commentsdtoList=commentsService.ListByTargetId(id, CommentTypeEnums.COMMENTS);
+        return Resultsdto.okOf(commentsdtoList);
+
     }
 }
 

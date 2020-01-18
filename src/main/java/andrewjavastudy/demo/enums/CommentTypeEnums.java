@@ -9,7 +9,7 @@ public enum  CommentTypeEnums {
         this.type = type;
     }
 
-    public Integer getType() {
+    public  Integer getType() {
         return type;
     }
 

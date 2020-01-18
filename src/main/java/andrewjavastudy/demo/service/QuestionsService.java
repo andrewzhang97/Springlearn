@@ -1,5 +1,6 @@
 package andrewjavastudy.demo.service;
 
+import andrewjavastudy.demo.dto.Commentsdto;
 import andrewjavastudy.demo.dto.Paginationdto;
 import andrewjavastudy.demo.dto.Questionsdto;
 import andrewjavastudy.demo.exception.CustomizeErrorCode;
@@ -10,13 +11,19 @@ import andrewjavastudy.demo.mapper.UsersMapper;
 import andrewjavastudy.demo.model.Questions;
 import andrewjavastudy.demo.model.QuestionsExample;
 import andrewjavastudy.demo.model.Users;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class QuestionsService {
     @Autowired
@@ -93,7 +100,7 @@ public class QuestionsService {
         Integer offset=size*(page-1);
         //List<Questions> questions=questionsMapper.listByUserId(userId,offset,size);
         QuestionsExample example=new QuestionsExample();
-        example.createCriteria().andCreatorIdEqualTo(userId);
+        example.setOrderByClause("gmt_create desc");
         List<Questions> questions=questionsMapper.selectByExampleWithRowbounds(example,new RowBounds(offset,size));
         List<Questionsdto>  questionsdtoList=new ArrayList<>();
 
@@ -154,5 +161,23 @@ public class QuestionsService {
         questions.setId(id);
         questions.setViewCount(1);
         questionsExtMapper.incView(questions);
+    }
+
+    public List<Questionsdto> selectRelated(Questionsdto questionsdto) {
+        if(StringUtils.isBlank(questionsdto.getTags())){
+            return new ArrayList<>();
+        }
+        String tags[]=StringUtils.split(questionsdto.getTags(),",");//把tags分开，分为一个数组
+        String regexTags=Arrays.stream(tags).collect(Collectors.joining("|"));//读取tags
+        Questions questions=new Questions();
+        questions.setId(questionsdto.getId());
+        questions.setTags(regexTags);
+        List<Questions> questionsList=questionsExtMapper.selectRelated(questions);
+        List<Questionsdto>questionsdtos=questionsList.stream().map(q->{
+            Questionsdto questionsdtolist=new Questionsdto();
+            BeanUtils.copyProperties(q,questionsdtolist);
+            return  questionsdtolist;
+        }).collect(Collectors.toList());//变成Questiondto
+        return questionsdtos;
     }
 }

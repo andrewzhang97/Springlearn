@@ -30,6 +30,8 @@ public class CommentsService {
     @Autowired
     private UsersMapper usersMapper;
 
+
+
     @Transactional//事务，封装为一个事务，如果一旦出错 全部回滚
     public void insert(Comments comments) {
         if(comments.getParentId()==null||comments.getParentId()==0){
@@ -57,9 +59,40 @@ public class CommentsService {
         }
     }
 
-    public List<Commentsdto> ListByParentId(Long id) {
+//    public List<Commentsdto> ListByParentId(Long id,CommentTypeEnums type) {
+//        CommentsExample commentsExample=new CommentsExample();
+//
+//        commentsExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(type.getType());
+//        List<Comments> comments=commentsMapper.selectByExample(commentsExample);
+//        if(comments.size()==0){
+//            return new ArrayList<>();
+//        }
+//        Set<Long> commentators=comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());//map方法将流中的元素映射成另外的值，新的值类型可以和原来的元素的类型不同。
+//        //collect是计算结果集 这样可以很好的避免重复读取
+//
+//        List<Long> userslist=new ArrayList();//此处使用范型
+//        userslist.addAll(commentators);
+//
+//        UsersExample usersExample= new UsersExample();
+//        usersExample.createCriteria().andIdIn(userslist);
+//        List<Users> users=usersMapper.selectByExample(usersExample);
+//        //不使用暴力破解，用map处理该问题
+//        Map<Long,Users> usersMap=users.stream().collect(Collectors.toMap(user -> user.getId(),user ->user));
+//        //使用lambda表达式获取评论和评论人之后转化为dto
+//        List<Commentsdto> commentsdtos =comments.stream().map(comment->{
+//            Commentsdto commentsdto=new Commentsdto();
+//            BeanUtils.copyProperties(comment,commentsdto);
+//            commentsdto.setUsers(usersMap.get(comment.getCommentator()));
+//            return commentsdto;
+//        }).collect(Collectors.toList());
+//        return commentsdtos;
+//    }
+
+    public List<Commentsdto> ListByTargetId(Long id,CommentTypeEnums type) {
         CommentsExample commentsExample=new CommentsExample();
-        commentsExample.createCriteria().andParentIdEqualTo(id);
+
+        commentsExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(type.getType());
+        commentsExample.setOrderByClause("gmt_create desc");
         List<Comments> comments=commentsMapper.selectByExample(commentsExample);
         if(comments.size()==0){
             return new ArrayList<>();
