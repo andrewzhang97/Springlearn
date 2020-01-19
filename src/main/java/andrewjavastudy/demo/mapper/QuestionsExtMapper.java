@@ -1,5 +1,6 @@
 package andrewjavastudy.demo.mapper;
 
+import andrewjavastudy.demo.dto.QuestionsQuerydto;
 import andrewjavastudy.demo.model.Questions;
 import andrewjavastudy.demo.model.QuestionsExample;
 import java.util.List;
@@ -16,4 +17,7 @@ public interface QuestionsExtMapper {
     int incView(Questions record);
     List<Questions> selectRelated(Questions questions);
 
+    Integer countBySearch(QuestionsQuerydto questionsQuerydto);
+
+    List<Questions> selectBySearch(QuestionsQuerydto questionsQuerydto);
 }

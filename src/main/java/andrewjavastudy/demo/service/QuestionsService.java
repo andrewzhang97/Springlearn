@@ -2,6 +2,7 @@ package andrewjavastudy.demo.service;
 
 import andrewjavastudy.demo.dto.Commentsdto;
 import andrewjavastudy.demo.dto.Paginationdto;
+import andrewjavastudy.demo.dto.QuestionsQuerydto;
 import andrewjavastudy.demo.dto.Questionsdto;
 import andrewjavastudy.demo.exception.CustomizeErrorCode;
 import andrewjavastudy.demo.exception.CustomizeException;
@@ -35,10 +36,18 @@ public class QuestionsService {
     @Autowired
     private QuestionsExtMapper questionsExtMapper;
 
-    public Paginationdto list(Integer page, Integer size){
+    public Paginationdto list(String search,Integer page, Integer size){
+
+        if(StringUtils.isNotBlank(search)){
+            String tags[]=StringUtils.split(search," ");//把tags分开，分为一个数组
+            search=Arrays.stream(tags).collect(Collectors.joining("|"));//读取tags
+        }
+
 
         Paginationdto paginationdto =new Paginationdto();
-        Integer totalCount=(int)questionsMapper.countByExample(new QuestionsExample());
+        QuestionsQuerydto questionsQuerydto=new QuestionsQuerydto();
+        questionsQuerydto.setSearch(search);
+        Integer totalCount=(int)questionsExtMapper.countBySearch(questionsQuerydto);
         Integer totalPage;
         if(totalCount%size==0){
             totalPage=totalCount/size;
@@ -56,8 +65,10 @@ public class QuestionsService {
         }
         paginationdto.setPagination(page,totalPage);//计算page数
         Integer offset=size*(page-1);
-        //List<Questions> questions=questionsMapper.list(offset,size);
-        List<Questions> questions=questionsMapper.selectByExampleWithRowbounds(new QuestionsExample(),new RowBounds(offset,size));
+        //List<Questions> questions=questionsMapper.list(offset,size);\
+        questionsQuerydto.setPage(offset);
+        questionsQuerydto.setSize(size);
+        List<Questions> questions=questionsExtMapper.selectBySearch(questionsQuerydto);
         List<Questionsdto>  questionsdtoList=new ArrayList<>();
 
 
