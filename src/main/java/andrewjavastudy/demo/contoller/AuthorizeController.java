@@ -5,6 +5,7 @@ import andrewjavastudy.demo.dto.GithubUsers;
 import andrewjavastudy.demo.model.Users;
 import andrewjavastudy.demo.provider.GitProvider;
 import andrewjavastudy.demo.service.UsersService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
+@Slf4j
 public class AuthorizeController {
 
     @Value("${github.client.id}")
@@ -67,6 +69,7 @@ public class AuthorizeController {
             return "redirect:/";
         }else{
             //login fail, log again
+            log.error("callback get github error {}",githubUsers);//打日志进行记录
             return "redirect:/";//redirect返回的是路径
         }
 
